@@ -1,38 +1,143 @@
+:root {
+  --text-accent: #00ffdd; /* Define your accent color */
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Make the App container take the full height of the viewport */
+}
+
+.game-board {
+  position: relative; /* Add relative positioning to the game board */
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-gap: 0; /* Remove gap to have consistent borders */
+  margin: 20px auto;
+  border: 2px solid var(--text-accent); /* Outline in text-accent color */
+  padding: 0;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: #f0f0f0;
+  font-size: 48px; /* Increase font size for bigger X and O */
+  cursor: pointer;
+  border: 2px solid var(--text-accent); /* Inner borders in accent color */
+  font-weight: bold;
 }
 
-.App-link {
-  color: #61dafb;
+.cell:nth-child(1),
+.cell:nth-child(2),
+.cell:nth-child(4),
+.cell:nth-child(5) {
+  border-right-width: 0;
+  border-bottom-width: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cell:nth-child(3),
+.cell:nth-child(6) {
+  border-bottom-width: 0;
+}
+
+.cell:nth-child(7),
+.cell:nth-child(8) {
+  border-right-width: 0;
+}
+
+.cell.X {
+  color: red; /* X in red color */
+}
+
+.cell.O {
+  color: blue; /* O in blue color */
+}
+
+.winner {
+  background-color: #dff0d8; /* Highlight winning cells */
+}
+
+.strike {
+  position: absolute;
+  background-color: black;
+  z-index: 1; /* Ensure the strike line is above the cells */
+}
+
+.strike-row-1 {
+  top: 50px;
+  left: 0;
+  width: 300px; /* Width to cover the row */
+  height: 4px;
+}
+
+.strike-row-2 {
+  top: 150px;
+  left: 0;
+  width: 300px; /* Width to cover the row */
+  height: 4px;
+}
+
+.strike-row-3 {
+  top: 250px;
+  left: 0;
+  width: 300px; /* Width to cover the row */
+  height: 4px;
+}
+
+.strike-col-1 {
+  top: 0;
+  left: 50px;
+  width: 4px;
+  height: 300px; /* Height to cover the column */
+}
+
+.strike-col-2 {
+  top: 0;
+  left: 150px;
+  width: 4px;
+  height: 300px; /* Height to cover the column */
+}
+
+.strike-col-3 {
+  top: 0;
+  left: 250px;
+  width: 4px;
+  height: 300px; /* Height to cover the column */
+}
+
+.strike-diag-1 {
+  top: 0;
+  left: 0;
+  width: 424px; /* Adjusted diagonal length */
+  height: 4px;
+  transform: rotate(45deg);
+  transform-origin: top left;
+}
+
+.strike-diag-2 {
+  top: 0;
+  right: 0;
+  width: 424px; /* Adjusted diagonal length */
+  height: 4px;
+  transform: rotate(-45deg);
+  transform-origin: top right;
+}
+
+.status {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
