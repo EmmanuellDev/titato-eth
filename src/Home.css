@@ -1,0 +1,37 @@
+.App {
+    text-align: center;
+  }
+  
+  .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .title-T {
+    color: #ffd900; /* Gold color */
+    text-shadow: 0 0 10px #FFD700;
+    font-size: 10rem; /* Increase font size for T */
+    margin-right: 20px;
+  }
+  
+  .title-rest {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .title-line {
+    display: flex;
+  }
+  
+  .title-IC {
+    color: #00FFFF; /* Cyan color */
+    text-shadow: 0 0 10px #00FFFF;
+    font-size: 2rem; /* Adjust font size as needed */
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
