@@ -1,37 +1,93 @@
-.App {
-    text-align: center;
-  }
-  
-  .title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .title-T {
-    color: #ffd900; /* Gold color */
-    text-shadow: 0 0 10px #FFD700;
-    font-size: 10rem; /* Increase font size for T */
-    margin-right: 20px;
-  }
-  
-  .title-rest {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .title-line {
-    display: flex;
-  }
-  
-  .title-IC {
-    color: #00FFFF; /* Cyan color */
-    text-shadow: 0 0 10px #00FFFF;
-    font-size: 2rem; /* Adjust font size as needed */
-    font-weight: bold;
-    margin-right: 10px;
-  }
-  
+@import url('https://fonts.googleapis.com/css2?family=Foldit:wght@100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+.home-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center items vertically with some space at the top */
+  align-items: center;
+  background-image: url('titato-homepage-bg.jpeg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding-top: 20px; /* Adjust to leave a gap at the top */
+}
+
+.home-text {
+  font-family: 'Foldit', sans-serif; /* Use 'Foldit' for this class */
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff; /* Creates a white border effect */
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.home-text.tic {
+  font-size: 10rem;
+  margin-bottom: 10px; /* Adjust gap between texts */
+}
+
+.home-text.tac {
+  font-size: 8rem;
+  margin-bottom: 10px; /* Adjust gap between texts */
+}
+
+.home-text.toe {
+  font-size: 10rem;
+}
+
+.connect-wallet {
+  font-family: 'Josefin Sans', sans-serif; /* Use 'Josefin Sans' for this text */
+  font-weight: normal; /* Normal font weight */
+  color: #fff;
+  font-size: 1.5rem; /* Adjust size as needed */
+  margin: 20px 0; /* Space above and below the text */
+  text-align: center;
+}
+
+.wallet-icons {
+  display: flex;
+  gap: 15px; /* Space between icons */
+  margin-bottom: 20px; /* Space between icons and the footer text */
+}
+
+.wallet-icons img {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+}
+
+.footer {
+  position: absolute;
+  bottom: 20px; /* Adjust as needed */
+  text-align: center;
+  color: #fff;
+}
+
+.footer-text {
+  font-family: 'Josefin Sans', sans-serif; /* Use 'Josefin Sans' for this class */
+  font-weight: normal; /* Normal font weight */
+  font-size: 1.5rem; /* Adjust size as needed */
+  margin-top: 10px;
+}
+
+.footer-logo-inline {
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Ensure height matches width for circular shape */
+  border-radius: 50%; /* Makes the image circular */
+  border: 2px solid #fff; /* Optional: adds a border around the logo */
+  vertical-align: middle; /* Aligns the image vertically with the text */
+}
+
+
+
+/* Add unique class names and weight values */
+.foldit-header {
+  font-family: 'Foldit', sans-serif;
+  font-weight: 900; /* Example weight */
+}
+
+.foldit-body {
+  font-family: 'Foldit', sans-serif;
+  font-weight: 400; /* Example weight */
+}

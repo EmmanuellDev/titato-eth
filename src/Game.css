@@ -4,9 +4,12 @@
   
   .App {
     text-align: center;
+    background-image: url('titato-homepage-bg.jpeg');
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: #ffffff;
+    border-color: black;
     align-items: center;
     height: 100vh; /* Make the App container take the full height of the viewport */
   }
@@ -27,7 +30,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     font-size: 48px; /* Increase font size for bigger X and O */
     cursor: pointer;
     border: 2px solid var(--text-accent); /* Inner borders in accent color */
@@ -66,7 +69,7 @@
   
   .strike {
     position: absolute;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
     z-index: 1; /* Ensure the strike line is above the cells */
   }
   
