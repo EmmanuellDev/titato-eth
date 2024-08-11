@@ -46,15 +46,17 @@
   text-align: center;
 }
 
-.wallet-icons {
-  display: flex;
-  gap: 15px; /* Space between icons */
-  margin-bottom: 20px; /* Space between icons and the footer text */
-}
-
-.wallet-icons img {
-  width: 40px; /* Adjust size as needed */
-  height: 40px; /* Adjust size as needed */
+.connect-wallet-button {
+  align-self: center; /* Center the button within the tab */
+  margin-top: 20px; /* Space above the button */
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .footer {
@@ -90,4 +92,70 @@
 .foldit-body {
   font-family: 'Foldit', sans-serif;
   font-weight: 400; /* Example weight */
+}
+
+.wallet-option:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Wrapper to position the floating tab correctly */
+.home-wrapper {
+  position: relative;
+  height: 100vh;
+}
+
+/* Blur effect for the home container when the floating tab is open */
+.home-container.blur {
+  filter: blur(8px); /* Apply blur effect */
+  pointer-events: none; /* Disable interaction with blurred content */
+}
+
+/* Floating tab styles */
+.wallet-options-tab {
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  background-color: #fff; 
+  padding: 20px;
+  border-radius: 10px;
+  border: 4px solid #000; 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  z-index: 1000; /* Ensure the floating tab is above the blurred content */
+}
+
+/* Wallet option styles */
+.wallet-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.wallet-icon {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  margin-right: 10px;
+}
+
+/* Back button styles */
+.back-button {
+  align-self: center; /* Center the button within the tab */
+  margin-top: 20px; /* Space above the button */
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #444; /* Darken the button on hover */
 }
