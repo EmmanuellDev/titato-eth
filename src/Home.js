@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// Removed JsonRpcProvider import
 import './Home.css';
 import logo from './titato-homepage-logo.jpg';
 import rainbowWallet from './titato-rainbow-wallet.jpeg';
@@ -7,10 +6,11 @@ import trustWallet from './titato-trust-wallet.jpeg';
 import metamaskWallet from './titato-metamask-wallet.jpeg';
 import binanceChainWallet from './titato-binance-chain-wallet.jpeg';
 
-
 const Home = () => {
   const [isTabOpen, setIsTabOpen] = useState(false);
-
+  const [popupMessage, setPopupMessage] = useState(''); // For the pop-up message
+  const [showPopup, setShowPopup] = useState(false);    // To control the visibility of the pop-up
+ 
   const openWalletTab = () => {
     setIsTabOpen(true);
   };
@@ -19,41 +19,71 @@ const Home = () => {
     setIsTabOpen(false);
   };
 
+  const showPopupNotification = (message) => {
+    setPopupMessage(message);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 3000); // Pop-up will disappear after 3 seconds
+  };
+
   const handleWalletConnect = async (walletType) => {
     try {
       await connectWallet(walletType);
-      alert(`${walletType.charAt(0).toUpperCase() + walletType.slice(1)} connected successfully!`);
+      showPopupNotification(`${walletType.charAt(0).toUpperCase() + walletType.slice(1)} connected successfully!`);
       closeWalletTab(); // Close the tab after connecting
     } catch (error) {
-      alert(`Failed to connect to ${walletType}`);
+      showPopupNotification(`Failed to connect to ${walletType}`);
     }
   };
 
   const connectWallet = async (walletType) => {
     try {
-      if (walletType === 'metamask' || walletType === 'rainbow' || walletType === 'trust') {
-        if (window.ethereum) {
+      let isConnected = false;
+
+      if (walletType === 'metamask') {
+        if (window.ethereum && window.ethereum.isMetaMask) {
           await window.ethereum.request({ method: 'eth_requestAccounts' });
+          isConnected = true;
         } else {
-          alert(`${walletType.charAt(0).toUpperCase() + walletType.slice(1)} is not installed.`);
+          showPopupNotification('MetaMask is not installed.');
+          return;
+        }
+      } else if (walletType === 'rainbow') {
+        if (window.ethereum && !window.ethereum.isMetaMask) {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          isConnected = true;
+        } else {
+          showPopupNotification('Rainbow Wallet is not installed.');
+          return;
+        }
+      } else if (walletType === 'trust') {
+        if (window.ethereum && window.ethereum.isTrust) {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          isConnected = true;
+        } else {
+          showPopupNotification('Trust Wallet is not installed.');
           return;
         }
       } else if (walletType === 'binance') {
         if (window.BinanceChain) {
           await window.BinanceChain.request({ method: 'eth_requestAccounts' });
+          isConnected = true;
         } else {
-          alert('Binance Chain Wallet is not installed.');
+          showPopupNotification('Binance Chain Wallet is not installed.');
           return;
         }
       } else {
-        alert('Unsupported wallet type.');
+        showPopupNotification('Unsupported wallet type.');
         return;
       }
 
-      // You can handle additional logic if needed after connection
+      if (isConnected) {
+        showPopupNotification(`${walletType.charAt(0).toUpperCase() + walletType.slice(1)} connected successfully!`);
+      }
     } catch (error) {
       console.error(`Error connecting ${walletType}:`, error);
-      throw error; // Re-throw the error to be caught by handleWalletConnect
+      showPopupNotification(`Failed to connect to ${walletType}`);
     }
   };
 
@@ -87,6 +117,11 @@ const Home = () => {
             <img src={binanceChainWallet} alt="Binance Chain Wallet" className="wallet-icon" /> Binance Chain Wallet
           </div>
           <button className="back-button" onClick={closeWalletTab}>Back</button>
+        </div>
+      )}
+      {showPopup && (
+        <div className={`popup-notification ${showPopup ? 'show' : ''}`}>
+          {popupMessage}
         </div>
       )}
     </div>
