@@ -5,6 +5,7 @@ import rainbowWallet from './titato-rainbow-wallet.jpeg';
 import trustWallet from './titato-trust-wallet.jpeg';
 import metamaskWallet from './titato-metamask-wallet.jpeg';
 import binanceChainWallet from './titato-binance-chain-wallet.jpeg';
+import Button from './component/Wallet';
 
 const Home = () => {
   const [isTabOpen, setIsTabOpen] = useState(false);
@@ -96,6 +97,7 @@ const Home = () => {
         <div className="connect-wallet">
           <button className="connect-wallet-button" onClick={openWalletTab}>Connect with your wallet</button>
         </div>
+        <Button />
         <div className="footer">
           <div className="footer-text">
             Developed by <img src={logo} alt="Logo" className="footer-logo-inline" /> Emman

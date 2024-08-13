@@ -1,5 +1,5 @@
 // src/config.js
-export const CONTRACT_ADDRESS = '';
+export const CONTRACT_ADDRESS = '0xE8C42b0c182d31F06d938a97a969606A7731fFda';
 
 export const CONTRACT_ABI = [
     [
