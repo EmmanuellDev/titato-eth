@@ -1,25 +1,19 @@
 import React, { useState } from 'react';
 import './Home.css';
 import logo from './titato-homepage-logo.jpg';
-import rainbowWallet from './titato-rainbow-wallet.jpeg';
-import trustWallet from './titato-trust-wallet.jpeg';
+//import rainbowWallet from './titato-rainbow-wallet.jpeg';
+//import trustWallet from './titato-trust-wallet.jpeg';
 import metamaskWallet from './titato-metamask-wallet.jpeg';
-import binanceChainWallet from './titato-binance-chain-wallet.jpeg';
+//import binanceChainWallet from './titato-binance-chain-wallet.jpeg';
 import Button from './component/Wallet';
 
 const Home = () => {
   const [isTabOpen, setIsTabOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState(''); // For the pop-up message
-  const [showPopup, setShowPopup] = useState(false);    // To control the visibility of the pop-up
- 
-  const openWalletTab = () => {
-    setIsTabOpen(true);
-  };
-
-  const closeWalletTab = () => {
-    setIsTabOpen(false);
-  };
-
+  const [showPopup, setShowPopup] = useState(false);  // To control the visibility of the pop-up
+  const [showButton, setShowButton] = useState(false); // State to control Button visibility
+  const [hideConnectButton, setHideConnectButton] = useState(false);
+  
   const showPopupNotification = (message) => {
     setPopupMessage(message);
     setShowPopup(true);
@@ -32,11 +26,18 @@ const Home = () => {
     try {
       await connectWallet(walletType);
       showPopupNotification(`${walletType.charAt(0).toUpperCase() + walletType.slice(1)} connected successfully!`);
-      closeWalletTab(); // Close the tab after connecting
+     // closeWalletTab(); // Close the tab after connecting
     } catch (error) {
       showPopupNotification(`Failed to connect to ${walletType}`);
     }
   };
+
+  const handleConnectClick = () => {
+    setShowButton(true); // Show Button after clicking "Connect your wallet"
+    setHideConnectButton(true); // Hide "Connect your wallet" button
+  };
+
+
 
   const connectWallet = async (walletType) => {
     try {
@@ -48,30 +49,6 @@ const Home = () => {
           isConnected = true;
         } else {
           showPopupNotification('MetaMask is not installed.');
-          return;
-        }
-      } else if (walletType === 'rainbow') {
-        if (window.ethereum && !window.ethereum.isMetaMask) {
-          await window.ethereum.request({ method: 'eth_requestAccounts' });
-          isConnected = true;
-        } else {
-          showPopupNotification('Rainbow Wallet is not installed.');
-          return;
-        }
-      } else if (walletType === 'trust') {
-        if (window.ethereum && window.ethereum.isTrust) {
-          await window.ethereum.request({ method: 'eth_requestAccounts' });
-          isConnected = true;
-        } else {
-          showPopupNotification('Trust Wallet is not installed.');
-          return;
-        }
-      } else if (walletType === 'binance') {
-        if (window.BinanceChain) {
-          await window.BinanceChain.request({ method: 'eth_requestAccounts' });
-          isConnected = true;
-        } else {
-          showPopupNotification('Binance Chain Wallet is not installed.');
           return;
         }
       } else {
@@ -94,33 +71,26 @@ const Home = () => {
         <div className="home-text tic">TIC</div>
         <div className="home-text tac">TAC</div>
         <div className="home-text toe">TOE</div>
+        <div className="home">
+      {!hideConnectButton && (
         <div className="connect-wallet">
-          <button className="connect-wallet-button" onClick={openWalletTab}>Connect with your wallet</button>
-        </div>
-        <Button />
-        <div className="footer">
-          <div className="footer-text">
-            Developed by <img src={logo} alt="Logo" className="footer-logo-inline" /> Emman
-          </div>
-        </div>
-      </div>
-      {isTabOpen && (
-        <div className="wallet-options-tab">
-          <div className="wallet-option" onClick={() => handleWalletConnect('rainbow')}>
-            <img src={rainbowWallet} alt="Rainbow Wallet" className="wallet-icon" /> Rainbow Wallet
-          </div>
-          <div className="wallet-option" onClick={() => handleWalletConnect('trust')}>
-            <img src={trustWallet} alt="Trust Wallet" className="wallet-icon" /> Trust Wallet
-          </div>
-          <div className="wallet-option" onClick={() => handleWalletConnect('metamask')}>
-            <img src={metamaskWallet} alt="MetaMask" className="wallet-icon" /> MetaMask
-          </div>
-          <div className="wallet-option" onClick={() => handleWalletConnect('binance')}>
-            <img src={binanceChainWallet} alt="Binance Chain Wallet" className="wallet-icon" /> Binance Chain Wallet
-          </div>
-          <button className="back-button" onClick={closeWalletTab}>Back</button>
+          <button className="connect-wallet-button" onClick={handleConnectClick}>
+            Connect your wallet
+          </button>
         </div>
       )}
+      {showButton && (
+        <div className="button-container">
+          <Button /> {/* This will display the Button component */}
+        </div>
+      )}
+      <div className="footer">
+        <div className="footer-text">
+          Developed by <img src={logo} alt="Logo" className="footer-logo-inline" /> Emman
+        </div>
+      </div>
+    </div>
+        </div>
       {showPopup && (
         <div className={`popup-notification ${showPopup ? 'show' : ''}`}>
           {popupMessage}

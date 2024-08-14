@@ -62,6 +62,7 @@
 .footer {
   position: absolute;
   bottom: 20px; /* Adjust as needed */
+  width: 100%;
   text-align: center;
   color: #fff;
 }
@@ -71,11 +72,12 @@
   font-weight: normal; /* Normal font weight */
   font-size: 1.5rem; /* Adjust size as needed */
   margin-top: 10px;
+  margin: 0;
 }
 
 .footer-logo-inline {
   width: 30px; /* Adjust size as needed */
-  height: 30px; /* Ensure height matches width for circular shape */
+  height: 20px; /* Ensure height matches width for circular shape */
   border-radius: 50%; /* Makes the image circular */
   border: 2px solid #fff; /* Optional: adds a border around the logo */
   vertical-align: middle; /* Aligns the image vertically with the text */
