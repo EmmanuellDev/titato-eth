@@ -19,18 +19,20 @@ const Game = () => {
       try {
         const accounts = await web3.eth.getAccounts();
         const instance = new web3.eth.Contract(TicTacToeABI, contractAddress);
-
+  
         setAccount(accounts[0]);
         setContract(instance);
         const gameActive = await instance.methods.gameActive().call();
         setGameActive(gameActive);
       } catch (error) {
-        console.error('Error connecting to blockchain:', error);
+        console.error('Error connecting to blockchain:', JSON.stringify(error, null, 2));
       }
     };
-
+  
     init();
   }, []);
+  
+  
 
   const checkWinner = (board) => {
     const lines = [
@@ -57,31 +59,44 @@ const Game = () => {
     if (!gameActive || board[index] !== null || !isXNext) {
       return; // Prevent clicking on already filled cells, if the game is not active, or if it's not the user's turn
     }
-
+  
     const updatedBoard = [...board];
     updatedBoard[index] = 'X'; // User plays 'X'
     setBoard(updatedBoard);
     setIsXNext(false); // Toggle the next move to the computer
-
+  
     const winningLine = checkWinner(updatedBoard);
     if (winningLine) {
       setWinningCombination(winningLine);
       setGameActive(false); // Stop the game if there is a winner
       return;
     }
-
-    // Let the computer make a move
-    const computerMove = getBestMove(updatedBoard);
-    updatedBoard[computerMove] = 'O'; // Computer plays 'O'
-    setBoard(updatedBoard);
-    setIsXNext(true); // Toggle the next move back to the user
-
-    const computerWinningLine = checkWinner(updatedBoard);
-    if (computerWinningLine) {
-      setWinningCombination(computerWinningLine);
-      setGameActive(false); // Stop the game if there is a winner
+  
+    try {
+      // Let the computer make a move
+      const computerMove = getBestMove(updatedBoard);
+      updatedBoard[computerMove] = 'O'; // Computer plays 'O'
+      setBoard(updatedBoard);
+      setIsXNext(true); // Toggle the next move back to the user
+  
+      const computerWinningLine = checkWinner(updatedBoard);
+      if (computerWinningLine) {
+        setWinningCombination(computerWinningLine);
+        setGameActive(false); // Stop the game if there is a winner
+      }
+    } catch (error) {
+      if (error.message) {
+        console.error('Error message:', error.message);
+      } else if (error.data && error.data.message) {
+        console.error('Detailed error:', error.data.message);
+      } else {
+        console.error('Unhandled error:', JSON.stringify(error, null, 2));
+      }
     }
+    
   };
+  
+  
 
   const getBestMove = (board) => {
     const availableMoves = board.map((cell, index) => cell === null ? index : null).filter(val => val !== null);
@@ -100,6 +115,7 @@ const Game = () => {
 
     return move;
   };
+
 
   const minimax = (board, depth, isMaximizing) => {
     const scores = {

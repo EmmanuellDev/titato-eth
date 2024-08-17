@@ -1,0 +1,50 @@
+/* src/Mode.css */
+.mode-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  h1 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .mode-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .mode-button {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .mode-button.easy {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .mode-button.moderate {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .mode-button.hard {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .mode-button:hover {
+    opacity: 0.9;
+  }
+  

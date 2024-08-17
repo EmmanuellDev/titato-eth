@@ -1,17 +1,16 @@
 // index.js
-
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Home from './Home';
-import './index.css'; // Ensure this file exists and is correctly linked
-import Game from './Game';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-ReactDOM.render(
+// Create a root
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Render the app
+root.render(
   <React.StrictMode>
-    <Home />
-    <Game />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App />
+  </React.StrictMode>
 );
 
 
