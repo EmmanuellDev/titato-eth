@@ -5,7 +5,7 @@ import {ConnectButton,getDefaultConfig,RainbowKitProvider,} from '@rainbow-me/ra
 import { WagmiProvider } from 'wagmi';
 import {
   sepolia,
-  polygon
+  polygon,
   
 } from 'wagmi/chains';
 import {
@@ -16,7 +16,7 @@ import {
 const config = getDefaultConfig({
   appName: 'My RainbowKit App',
   projectId: 'YOUR_PROJECT_ID',
-  chains: [sepolia, polygon],
+  chains: [sepolia, polygon,],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 const queryClient = new QueryClient();

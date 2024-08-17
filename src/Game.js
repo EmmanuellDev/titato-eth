@@ -54,14 +54,14 @@ const Game = () => {
   };
 
   const handleCellClick = async (index) => {
-    if (!gameActive || board[index] !== null) {
-      return; // Prevent clicking on already filled cells or if the game is not active
+    if (!gameActive || board[index] !== null || !isXNext) {
+      return; // Prevent clicking on already filled cells, if the game is not active, or if it's not the user's turn
     }
 
     const updatedBoard = [...board];
-    updatedBoard[index] = isXNext ? 'X' : 'O'; // Set the cell to X or O based on isXNext
+    updatedBoard[index] = 'X'; // User plays 'X'
     setBoard(updatedBoard);
-    setIsXNext(!isXNext); // Toggle the next move
+    setIsXNext(false); // Toggle the next move to the computer
 
     const winningLine = checkWinner(updatedBoard);
     if (winningLine) {
@@ -70,18 +70,75 @@ const Game = () => {
       return;
     }
 
-    try {
-      await contract.methods.makeMove(index).send({ from: account });
-      const boardState = await contract.methods.board().call();
-      const mappedBoard = boardState.map(cell => cell === '1' ? 'X' : cell === '2' ? 'O' : null);
-      setBoard(mappedBoard);
-      const winningLine = checkWinner(mappedBoard);
-      if (winningLine) {
-        setWinningCombination(winningLine);
-        setGameActive(false); // Stop the game if there is a winner
+    // Let the computer make a move
+    const computerMove = getBestMove(updatedBoard);
+    updatedBoard[computerMove] = 'O'; // Computer plays 'O'
+    setBoard(updatedBoard);
+    setIsXNext(true); // Toggle the next move back to the user
+
+    const computerWinningLine = checkWinner(updatedBoard);
+    if (computerWinningLine) {
+      setWinningCombination(computerWinningLine);
+      setGameActive(false); // Stop the game if there is a winner
+    }
+  };
+
+  const getBestMove = (board) => {
+    const availableMoves = board.map((cell, index) => cell === null ? index : null).filter(val => val !== null);
+    let bestScore = -Infinity;
+    let move;
+
+    availableMoves.forEach((index) => {
+      board[index] = 'O';
+      const score = minimax(board, 0, false);
+      board[index] = null;
+      if (score > bestScore) {
+        bestScore = score;
+        move = index;
       }
-    } catch (error) {
-      console.error('Error making move:', error);
+    });
+
+    return move;
+  };
+
+  const minimax = (board, depth, isMaximizing) => {
+    const scores = {
+      'X': -10,
+      'O': 10,
+      'draw': 0,
+    };
+
+    const result = checkWinner(board);
+    if (result) {
+      return scores[board[result[0]]];
+    }
+
+    if (board.every(cell => cell !== null)) {
+      return scores['draw'];
+    }
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      board.forEach((cell, index) => {
+        if (cell === null) {
+          board[index] = 'O';
+          const score = minimax(board, depth + 1, false);
+          board[index] = null;
+          bestScore = Math.max(score, bestScore);
+        }
+      });
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      board.forEach((cell, index) => {
+        if (cell === null) {
+          board[index] = 'X';
+          const score = minimax(board, depth + 1, true);
+          board[index] = null;
+          bestScore = Math.min(score, bestScore);
+        }
+      });
+      return bestScore;
     }
   };
 

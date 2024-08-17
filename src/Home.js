@@ -81,14 +81,15 @@ const Home = () => {
       )}
       {showButton && (
         <div className="button-container">
-          <Button /> {/* This will display the Button component */}
+          <Button />
         </div>
       )}
-      <div className="footer">
-        <div className="footer-text">
-          Developed by <img src={logo} alt="Logo" className="footer-logo-inline" /> Emman
-        </div>
-      </div>
+<div className="footer">
+  <h2 className="footer-text">
+    Developed by <img src={logo} alt="Logo" className="footer-logo-inline" /> Emman
+  </h2>
+</div>
+
     </div>
         </div>
       {showPopup && (
