@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: center; /* Center items vertically with some space at the top */
   align-items: center;
-  background-image: url('titato-homepage-bg.jpeg');
+  background-image: url('./titato-bg.jpg');
   background-size: cover;
   background-position: center;
   position: relative;

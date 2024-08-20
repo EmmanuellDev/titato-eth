@@ -1,17 +1,19 @@
 // src/Mode.js
 import React from 'react';
 import './Mode.css'; // Import the corresponding CSS file for styling
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Mode = () => {
+  const navigate = useNavigate();
+
   const handleModeClick = (mode) => {
     console.log(`${mode} selected`);
-    // Add logic to navigate or set the game difficulty based on the mode
+    navigate(`/${mode.toLowerCase()}-mode`);
   };
 
   return (
     <div className="mode-container">
-    <Link to="/mode">Select Game Mode</Link>
+      <Link to="/mode">Select your Game Mode</Link>
 
       <div className="mode-buttons">
         <button onClick={() => handleModeClick('Easy')} className="mode-button easy">Easy Mode</button>

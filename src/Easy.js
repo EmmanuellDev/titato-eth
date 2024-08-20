@@ -1,12 +1,12 @@
-// src/Game.js
+// src/Hard.js
 import React, { useState, useEffect } from 'react';
 import web3 from './web3'; // Import the Web3 setup
 import TicTacToeABI from './TicTacToeABI.json'; // Save the ABI JSON file
-import './Game.css'; // Import CSS for styling
+import './Easy.css'; // Import CSS for styling
 
 const contractAddress = 'YOUR_CONTRACT_ADDRESS'; // Replace with your deployed contract address
 
-const Game = () => {
+const Easy = () => {
   const [account, setAccount] = useState('');
   const [contract, setContract] = useState(null);
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -100,9 +100,17 @@ const Game = () => {
 
   const getBestMove = (board) => {
     const availableMoves = board.map((cell, index) => cell === null ? index : null).filter(val => val !== null);
+    
+    // Introduce randomness to make the AI easier
+    const randomFactor = Math.random();
+    if (randomFactor > 0.5) {
+      // If the random factor is greater than 0.5, make a random move
+      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+    
     let bestScore = -Infinity;
     let move;
-
+  
     availableMoves.forEach((index) => {
       board[index] = 'O';
       const score = minimax(board, 0, false);
@@ -112,9 +120,11 @@ const Game = () => {
         move = index;
       }
     });
-
+  
     return move;
   };
+  
+
 
 
   const minimax = (board, depth, isMaximizing) => {
@@ -213,4 +223,4 @@ const getStrikeClass = (winningCombination) => {
   return '';
 };
 
-export default Game;
+export default Easy;

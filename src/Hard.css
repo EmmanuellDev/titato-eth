@@ -4,7 +4,7 @@
   
   .App {
     text-align: center;
-    background-image: url('titato-homepage-bg.jpeg');
+    background-image: url('./titato-bg.jpg');
     display: flex;
     flex-direction: column;
     justify-content: center;

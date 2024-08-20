@@ -6,6 +6,8 @@ import { WagmiProvider } from 'wagmi';
 import {
   sepolia,
   polygon,
+  goerli,
+  arbitrum,
   
 } from 'wagmi/chains';
 import {
@@ -16,7 +18,7 @@ import {
 const config = getDefaultConfig({
   appName: 'My RainbowKit App',
   projectId: 'YOUR_PROJECT_ID',
-  chains: [sepolia, polygon,],
+  chains: [sepolia, polygon, goerli, arbitrum,],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 const queryClient = new QueryClient();

@@ -1,20 +1,24 @@
+// App.js
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Home';
-import Game from './Game';
-import Mode from './Mode'
+import Mode from './Mode';
+import Hard from './Hard';
+import Easy from './Easy';
+import Moderate from './Moderate'
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" component={Home} />
-        <Route path="/mode" component={Mode} />
-        <Route path="/game" component={Game} />
+        <Route exact path="/" element={<Home />} />
+        <Route path="/mode" element={<Mode />} />
+        <Route path="/easy-mode" element={<Easy />} />
+        <Route path="/moderate-mode" element={<Moderate />} />
+        <Route path="/hard-mode" element={<Hard />} />
       </Routes>
     </Router>
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+export default App;
