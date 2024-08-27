@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import web3 from './web3'; // Import the Web3 setup
 import TicTacToeABI from './TicTacToeABI.json'; // Save the ABI JSON file
 import './Easy.css'; // Import CSS for styling
+import { useNavigate } from 'react-router-dom';
 
 const contractAddress = 'YOUR_CONTRACT_ADDRESS'; // Replace with your deployed contract address
 
@@ -13,6 +14,9 @@ const Easy = () => {
   const [isXNext, setIsXNext] = useState(true); // Track if the next move is X
   const [gameActive, setGameActive] = useState(true);
   const [winningCombination, setWinningCombination] = useState([]); // Track winning combination
+  
+  
+    const navigate = useNavigate();
 
   useEffect(() => {
     const init = async () => {
@@ -53,6 +57,10 @@ const Easy = () => {
       }
     }
     return null;
+  };
+
+  const handleButtonClick = () => {
+    navigate('/mode'); // Redirects to /mode
   };
 
   const handleCellClick = async (index) => {
@@ -191,6 +199,9 @@ const Easy = () => {
         {gameActive ? `Next Player: ${isXNext ? 'X' : 'O'}` : 'Game Over'}
       </div>
       <button onClick={() => window.location.reload()}>Restart Game</button>
+      <div className='back-button'>
+        <button onClick={handleButtonClick}>Back</button>
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const Mode = () => {
 
   return (
     <div className="mode-container">
-      <Link to="/mode">Select your Game Mode</Link>
+      <Link to="/mode" className="mode-title">Select your Game Mode</Link>
 
       <div className="mode-buttons">
         <button onClick={() => handleModeClick('Easy')} className="mode-button easy">Easy Mode</button>

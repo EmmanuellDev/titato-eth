@@ -145,3 +145,7 @@
     cursor: pointer;
   }
   
+  .back-button {
+    background-color: black;
+    color: beige;
+  }
