@@ -179,13 +179,13 @@ const Easy = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-green-900 to-gray-900">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
           <div 
             key={i}
-            className="absolute rounded-full bg-gradient-to-r from-green-400 to-emerald-500 opacity-10"
+            className="absolute rounded-full bg-gradient-to-r from-green-400 to-lime-500 opacity-10"
             style={{
               width: `${Math.random() * 100 + 50}px`,
               height: `${Math.random() * 100 + 50}px`,
@@ -219,7 +219,7 @@ const Easy = () => {
         <>
           <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
-              <div className="text-xl eater-regular font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-500">
+              <div className="text-xl eater-regular font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-500">
                 Emma TTT-Game
               </div>
               <div className="flex items-center space-x-4">
@@ -244,7 +244,7 @@ const Easy = () => {
           <main className="relative z-10 flex flex-col items-center flex-grow px-4 py-8">
             {!gameStarted ? (
               <div className="text-center">
-                <h1 className="text-6xl md:text-7xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
+                <h1 className="text-6xl md:text-7xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-600">
                   EASY MODE
                 </h1>
                 <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -252,14 +252,14 @@ const Easy = () => {
                 </p>
                 <button
                   onClick={startGame}
-                  className="px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
+                  className="px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-lime-600 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
                 >
                   Start Game
                 </button>
               </div>
             ) : (
               <div className="text-center w-full max-w-md mx-auto">
-                <h2 className="text-3xl eater-regular font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
+                <h2 className="text-3xl eater-regular font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-600">
                   EASY MODE
                 </h2>
                 
@@ -336,7 +336,7 @@ const Easy = () => {
         .strike-row-1, .strike-row-2, .strike-row-3,
         .strike-col-1, .strike-col-2, .strike-col-3,
         .strike-diagonal-1, .strike-diagonal-2 {
-          background: linear-gradient(90deg, transparent 0%,rgb(22, 249, 60) 50%, transparent 100%);
+          background: linear-gradient(90deg, transparent 0%, #22c55e 50%, transparent 100%);
           height: 6px;
           border-radius: 3px;
           z-index: 10;
@@ -366,7 +366,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, #22c55e 50%, transparent 100%);
         }
         
         .strike-col-2 {
@@ -375,7 +375,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, #22c55e 50%, transparent 100%);
         }
         
         .strike-col-3 {
@@ -384,7 +384,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, #22c55e 50%, transparent 100%);
         }
         
         .strike-diagonal-1 {
