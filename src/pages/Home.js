@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
 import '../App.css';
+import { IoIosLogOut } from "react-icons/io";
 
 const Home = () => {
   const navigate = useNavigate();
   const [walletConnected, setWalletConnected] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [networkCorrect, setNetworkCorrect] = useState(false);
+  const [showDisconnect, setShowDisconnect] = useState(false);
 
   const sepoliaChainId = '0xaa36a7';
 
@@ -30,6 +32,7 @@ const Home = () => {
     if (accounts.length === 0) {
       setWalletConnected(false);
       setCurrentAccount(null);
+      setShowDisconnect(false);
     } else {
       setCurrentAccount(accounts[0]);
       setWalletConnected(true);
@@ -100,13 +103,20 @@ const Home = () => {
 
       setCurrentAccount(accounts[0]);
       setWalletConnected(true);
-
-      if (chainId === sepoliaChainId) {
-        navigate('/modes');
-      }
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const disconnectWallet = () => {
+    setWalletConnected(false);
+    setCurrentAccount(null);
+    setNetworkCorrect(false);
+    setShowDisconnect(false);
+  };
+
+  const toggleDisconnect = () => {
+    setShowDisconnect(!showDisconnect);
   };
 
   return (
@@ -134,22 +144,36 @@ const Home = () => {
             Emma TTT~Game
           </div>
           {walletConnected && networkCorrect && (
-            <div className="flex items-center space-x-2">
-              <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
-              <span className="text-sm text-gray-300">
-                {currentAccount?.slice(0, 6)}...{currentAccount?.slice(-4)}
-              </span>
+            <div className="relative flex items-center space-x-2">
+              <button
+                onClick={toggleDisconnect}
+                className="flex items-center space-x-2 cursor-pointer hover:text-teal-400 transition-colors flex items-center space-x-2 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full font-mono"
+              >
+                <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-sm text-gray-300">
+                  {currentAccount?.slice(0, 6)}...{currentAccount?.slice(-4)}
+                </span>
+              </button>
+              {showDisconnect && (
+                <button
+                  onClick={disconnectWallet}
+                  className="absolute top-full mt-2 px-4 flex justify-center items-center cursor-pointer  py-2 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 transition-colors"
+                >
+                  Disconnect
+                  <div className='pl-2'><IoIosLogOut /></div>
+                </button>
+              )}
             </div>
           )}
         </div>
       </header>
 
       <main className="relative z-10 flex flex-col justify-center items-center flex-grow px-4">
-        <div className="text-center max-w-2xl">
-          <h1 className="text-6xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-purple-500 to-pink-500 animate-text">
+        <div className="text-center max-w-screen">
+          <h1 className="text-7xl lg:text-9xl home-text md:text-7xl mb-6">
             TIC TAC TOE
           </h1>
-          <p className="text-xl text-gray-300 mb-10">
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl lg:ml-14">
             Play the classic game on the Ethereum blockchain. Challenge friends or test your skills against our AI!
           </p>
 
@@ -163,7 +187,7 @@ const Home = () => {
               <span className="absolute top-0 left-0 w-full h-full border-2 border-white rounded-full opacity-0 group-hover:opacity-100 animate-ping-slow"></span>
             </button>
           ) : (
-            <div className="bg-gray-800 bg-opacity-70 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-teal-400 border-opacity-30 max-w-md mx-29 w-full">
+            <div className="bg-gray-800 bg-opacity-70 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-teal-400 border-opacity-30 max-w-md md:mx-auto lg:ml-42 ml-11 w-full">
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center mb-4">
                   <div className="relative">
@@ -205,7 +229,16 @@ const Home = () => {
       </footer>
 
       {/* Global styles for animations */}
-      <style jsx global className='animate-text animate-ping-slow'></style>
+      <style jsx global>{`
+        @keyframes float {
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+          100% { transform: translateY(0); }
+        }
+        .animate-ping-slow {
+          animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+      `}</style>
     </div>
   );
 };
