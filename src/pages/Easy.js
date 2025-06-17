@@ -336,7 +336,7 @@ const Easy = () => {
         .strike-row-1, .strike-row-2, .strike-row-3,
         .strike-col-1, .strike-col-2, .strike-col-3,
         .strike-diagonal-1, .strike-diagonal-2 {
-          background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
+          background: linear-gradient(90deg, transparent 0%,rgb(22, 249, 60) 50%, transparent 100%);
           height: 6px;
           border-radius: 3px;
           z-index: 10;
@@ -366,7 +366,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
         }
         
         .strike-col-2 {
@@ -375,7 +375,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
         }
         
         .strike-col-3 {
@@ -384,7 +384,7 @@ const Easy = () => {
           bottom: 24px;
           width: 6px;
           height: auto;
-          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
+          background: linear-gradient(0deg, transparent 0%, rgb(22, 249, 60) 50%, transparent 100%);
         }
         
         .strike-diagonal-1 {
