@@ -93,6 +93,7 @@ const Modes = () => {
 
       <main className="relative z-10 flex flex-col items-center flex-grow px-4 py-12">
         {!currentAccount ? (
+        <div className="relative z-10 flex flex-col items-center justify-center flex-grow px-4">
           <div className="text-center">
             <BsPersonLock className="mx-auto text-9xl text-teal-400 mb-4" />
             <h1 className="text-5xl md:text-6xl orbitron font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-purple-500 to-pink-500">
@@ -108,6 +109,7 @@ const Modes = () => {
               Back to Home
             </button>
           </div>
+        </div>
         ) : (
           <>
             <div className="text-center mb-12">
