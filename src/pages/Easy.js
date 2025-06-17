@@ -1,303 +1,386 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../App.css';
 
-const GameEasy = ({ currentAccount }) => {
+const Easy = () => {
   const navigate = useNavigate();
+  const [currentAccount, setCurrentAccount] = useState(null);
+  const [gameStarted, setGameStarted] = useState(false);
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-  const [winner, setWinner] = useState(null);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [winningLine, setWinningLine] = useState([]);
-  const boardRef = useRef(null);
+  const [gameStatus, setGameStatus] = useState('');
+  const [winningLine, setWinningLine] = useState(null);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  // Check for winner after each move
   useEffect(() => {
-    const { winner: gameWinner, line } = calculateWinner(board);
-    if (gameWinner) {
-      setWinner(gameWinner);
-      setWinningLine(line);
-    } else if (!board.includes(null)) {
-      setWinner('draw');
-    }
-  }, [board]);
+    checkIfWalletIsConnected();
+  }, []);
 
-  // AI makes a move after player's turn
   useEffect(() => {
-    if (!isPlayerTurn && !winner && gameStarted) {
+    if (!isPlayerTurn && gameStarted && !isGameOver) {
       const timer = setTimeout(() => {
         makeAIMove();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isPlayerTurn, winner, gameStarted]);
+  }, [isPlayerTurn, gameStarted, isGameOver]);
 
-  const calculateWinner = (squares) => {
-    const lines = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-      [0, 4, 8], [2, 4, 6]             // diagonals
-    ];
-
-    for (let line of lines) {
-      const [a, b, c] = line;
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return { winner: squares[a], line };
+  const checkIfWalletIsConnected = async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length > 0) {
+          setCurrentAccount(accounts[0]);
+        }
+      } catch (error) {
+        console.error('Error checking wallet connection:', error);
       }
     }
-    return { winner: null, line: [] };
+  };
+
+  const winningCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+    [0, 4, 8], [2, 4, 6] // diagonals
+  ];
+
+  const checkWinner = (currentBoard) => {
+    for (let combination of winningCombinations) {
+      const [a, b, c] = combination;
+      if (currentBoard[a] && currentBoard[a] === currentBoard[b] && currentBoard[a] === currentBoard[c]) {
+        return { winner: currentBoard[a], line: combination };
+      }
+    }
+    return null;
+  };
+
+  const isBoardFull = (currentBoard) => {
+    return currentBoard.every(cell => cell !== null);
   };
 
   const makeAIMove = () => {
-    // Simple AI - makes random moves (easy mode)
-    const emptySquares = board
-      .map((square, index) => (square === null ? index : null))
-      .filter(val => val !== null);
+    const availableMoves = board.map((cell, index) => cell === null ? index : null).filter(index => index !== null);
+    
+    if (availableMoves.length === 0) return;
 
-    if (emptySquares.length > 0) {
-      const randomIndex = Math.floor(Math.random() * emptySquares.length);
-      const newBoard = [...board];
-      newBoard[emptySquares[randomIndex]] = 'O';
-      setBoard(newBoard);
+    // Easy AI: Make random moves with 30% chance of making optimal move
+    let aiMove;
+    if (Math.random() < 0.3) {
+      // Try to win or block player occasionally
+      aiMove = findBestMove(availableMoves) || availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    } else {
+      // Make random move
+      aiMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+
+    const newBoard = [...board];
+    newBoard[aiMove] = 'O';
+    setBoard(newBoard);
+
+    const result = checkWinner(newBoard);
+    if (result) {
+      setWinningLine(result.line);
+      setGameStatus(result.winner === 'X' ? 
+        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
+        'AI Wins!'
+      );
+      setIsGameOver(true);
+    } else if (isBoardFull(newBoard)) {
+      setGameStatus("It's a Draw!");
+      setIsGameOver(true);
+    } else {
       setIsPlayerTurn(true);
     }
   };
 
-  const handleClick = (index) => {
-    if (!gameStarted || winner || !isPlayerTurn || board[index]) return;
+  const findBestMove = (availableMoves) => {
+    // Check if AI can win
+    for (let move of availableMoves) {
+      const testBoard = [...board];
+      testBoard[move] = 'O';
+      if (checkWinner(testBoard)?.winner === 'O') {
+        return move;
+      }
+    }
+
+    // Check if AI needs to block player
+    for (let move of availableMoves) {
+      const testBoard = [...board];
+      testBoard[move] = 'X';
+      if (checkWinner(testBoard)?.winner === 'X') {
+        return move;
+      }
+    }
+
+    return null;
+  };
+
+  const handleCellClick = (index) => {
+    if (!gameStarted || !isPlayerTurn || board[index] || isGameOver) return;
 
     const newBoard = [...board];
     newBoard[index] = 'X';
     setBoard(newBoard);
-    setIsPlayerTurn(false);
-  };
 
-  const resetGame = () => {
-    setBoard(Array(9).fill(null));
-    setWinner(null);
-    setWinningLine([]);
-    setIsPlayerTurn(true);
+    const result = checkWinner(newBoard);
+    if (result) {
+      setWinningLine(result.line);
+      setGameStatus(result.winner === 'X' ? 
+        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
+        'AI Wins!'
+      );
+      setIsGameOver(true);
+    } else if (isBoardFull(newBoard)) {
+      setGameStatus("It's a Draw!");
+      setIsGameOver(true);
+    } else {
+      setIsPlayerTurn(false);
+    }
   };
 
   const startGame = () => {
     setGameStarted(true);
-    setIsPlayerTurn(true);
     setBoard(Array(9).fill(null));
-    setWinner(null);
-    setWinningLine([]);
+    setIsPlayerTurn(true);
+    setGameStatus('');
+    setWinningLine(null);
+    setIsGameOver(false);
   };
 
-  // Get strike line class based on winning line
-  const getStrikeLineClass = () => {
-    if (winningLine.length !== 3) return '';
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setIsPlayerTurn(true);
+    setGameStatus('');
+    setWinningLine(null);
+    setIsGameOver(false);
+  };
+
+  const getStrikeClass = () => {
+    if (!winningLine) return '';
     
-    // Horizontal lines
-    if (winningLine.includes(0) && winningLine.includes(1) && winningLine.includes(2)) 
-      return 'strike-row-1';
-    if (winningLine.includes(3) && winningLine.includes(4) && winningLine.includes(5)) 
-      return 'strike-row-2';
-    if (winningLine.includes(6) && winningLine.includes(7) && winningLine.includes(8)) 
-      return 'strike-row-3';
+    const [a, b, c] = winningLine;
     
-    // Vertical lines
-    if (winningLine.includes(0) && winningLine.includes(3) && winningLine.includes(6)) 
-      return 'strike-col-1';
-    if (winningLine.includes(1) && winningLine.includes(4) && winningLine.includes(7)) 
-      return 'strike-col-2';
-    if (winningLine.includes(2) && winningLine.includes(5) && winningLine.includes(8)) 
-      return 'strike-col-3';
+    // Row strikes
+    if (a === 0 && b === 1 && c === 2) return 'strike-row-1';
+    if (a === 3 && b === 4 && c === 5) return 'strike-row-2';
+    if (a === 6 && b === 7 && c === 8) return 'strike-row-3';
     
-    // Diagonal lines
-    if (winningLine.includes(0) && winningLine.includes(4) && winningLine.includes(8)) 
-      return 'strike-diagonal-1';
-    if (winningLine.includes(2) && winningLine.includes(4) && winningLine.includes(6)) 
-      return 'strike-diagonal-2';
+    // Column strikes
+    if (a === 0 && b === 3 && c === 6) return 'strike-col-1';
+    if (a === 1 && b === 4 && c === 7) return 'strike-col-2';
+    if (a === 2 && b === 5 && c === 8) return 'strike-col-3';
+    
+    // Diagonal strikes
+    if (a === 0 && b === 4 && c === 8) return 'strike-diagonal-1';
+    if (a === 2 && b === 4 && c === 6) return 'strike-diagonal-2';
     
     return '';
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
-      {/* Header */}
-      <header className="p-4 flex justify-between items-center">
-        <button 
-          onClick={() => navigate('/modes')}
-          className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
-        >
-          Back to Modes
-        </button>
-        {currentAccount && (
-          <div className="flex items-center bg-gray-800 px-3 py-1 rounded-full">
-            <div className="h-2 w-2 rounded-full bg-green-400 mr-2"></div>
-            <span className="text-sm">
-              {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)}
-            </span>
+    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <div 
+            key={i}
+            className="absolute rounded-full bg-gradient-to-r from-green-400 to-emerald-500 opacity-10"
+            style={{
+              width: `${Math.random() * 100 + 50}px`,
+              height: `${Math.random() * 100 + 50}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animation: `float ${Math.random() * 10 + 10}s linear infinite`,
+            }}
+          />
+        ))}
+      </div>
+
+      <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-500">
+            Emma TTT Game
           </div>
-        )}
+          <div className="flex items-center space-x-4">
+            {currentAccount && (
+              <div className="flex items-center space-x-2 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full">
+                <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-sm text-gray-300 font-mono">
+                  {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)}
+                </span>
+              </div>
+            )}
+            <button 
+              onClick={() => navigate('/modes')}
+              className="px-4 py-2 rounded-full bg-gray-800 bg-opacity-70 text-gray-300 hover:text-white transition-colors"
+            >
+              Back
+            </button>
+          </div>
+        </div>
       </header>
 
-      {/* Main Game Area */}
-      <main className="flex-grow flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
-          EASY MODE
-        </h1>
-
+      <main className="relative z-10 flex flex-col items-center flex-grow px-4 py-8">
         {!gameStarted ? (
           <div className="text-center">
+            <h1 className="text-6xl md:text-7xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
+              EASY MODE
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Perfect for beginners! The AI will make occasional mistakes to give you a fair chance.
+            </p>
             <button
               onClick={startGame}
-              className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full text-xl font-bold hover:scale-105 transition-transform"
+              className="px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
             >
-              START GAME
+              Start Game
             </button>
           </div>
         ) : (
-          <>
-            <div className="mb-8 text-center">
-              <p className="text-xl mb-2">
-                {winner 
-                  ? winner === 'draw' 
-                    ? "Game ended in a draw!" 
-                    : `Winner: ${winner}`
-                  : isPlayerTurn 
-                    ? "Your turn (X)"
-                    : "AI is thinking..."}
-              </p>
-              {winner && (
-                <button
-                  onClick={resetGame}
-                  className="mt-4 px-6 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
-                >
-                  Play Again
-                </button>
+          <div className="text-center w-full max-w-md mx-auto">
+            <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
+              EASY MODE
+            </h2>
+            
+            <div className="mb-4">
+              {gameStatus ? (
+                <div className="text-2xl font-bold text-white mb-4">{gameStatus}</div>
+              ) : (
+                <div className="text-lg text-gray-300">
+                  {isPlayerTurn ? 
+                    `Your Turn (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})` : 
+                    "AI thinking... (O)"
+                  }
+                </div>
               )}
             </div>
 
-            {/* Game Board with Strike Line */}
-            <div className="relative mb-8">
-              <div className={`grid grid-cols-3 gap-3 ${winner ? getStrikeLineClass() : ''}`}>
-                {board.map((square, index) => (
+            <div className="relative inline-block">
+              <div className="grid grid-cols-3 gap-2 bg-gray-800 p-4 rounded-xl shadow-2xl">
+                {board.map((cell, index) => (
                   <button
                     key={index}
-                    onClick={() => handleClick(index)}
-                    className={`w-20 h-20 md:w-24 md:h-24 flex items-center justify-center text-3xl font-bold rounded-lg 
-                      ${square === 'X' ? 'bg-blue-500' : square === 'O' ? 'bg-red-500' : 'bg-gray-800 hover:bg-gray-700'}
-                      ${winner && 'cursor-default'}
-                      ${winningLine.includes(index) ? 'z-10' : ''}`}
-                    disabled={!!winner}
+                    onClick={() => handleCellClick(index)}
+                    className={`w-20 h-20 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-3xl font-bold transition-all duration-200 ${
+                      winningLine?.includes(index) ? 'bg-green-500 text-white' : ''
+                    } ${
+                      cell === 'X' ? 'text-blue-400' : cell === 'O' ? 'text-red-400' : 'text-gray-400'
+                    }`}
+                    disabled={!gameStarted || !isPlayerTurn || cell || isGameOver}
                   >
-                    {square}
+                    {cell}
                   </button>
                 ))}
               </div>
+              
+              {winningLine && (
+                <div className={`absolute inset-0 pointer-events-none ${getStrikeClass()}`}></div>
+              )}
             </div>
-          </>
+
+            <div className="mt-6 space-x-4">
+              <button
+                onClick={resetGame}
+                className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg transition-all duration-300"
+              >
+                Reset Game
+              </button>
+              <button
+                onClick={() => navigate('/modes')}
+                className="px-6 py-2 rounded-full bg-gray-600 text-white font-semibold hover:bg-gray-700 transition-all duration-300"
+              >
+                Change Mode
+              </button>
+            </div>
+          </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="p-4 text-center text-gray-400 text-sm">
-        © {new Date().getFullYear()} ETH Tic Tac Toe | Easy Mode
+      <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
+        <div className="container mx-auto px-4">
+          <p>© {new Date().getFullYear()} EMMA CATERINGS. All rights reserved | Designed By Team Fortiv</p>
+        </div>
       </footer>
 
-      {/* Strike Line Styles */}
+      {/* Global styles for animations and strikes */}
       <style jsx global>{`
-        .strike-row-1::after {
-          content: "";
-          position: absolute;
-          width: 80%;
-          height: 4px;
-          background: white;
-          top: 16.5%;
-          left: 10%;
-          animation: strike 0.5s ease-out;
+        @keyframes float {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(20px, 20px) rotate(180deg); }
+          100% { transform: translate(0, 0) rotate(360deg); }
         }
-
-        .strike-row-2::after {
-          content: "";
-          position: absolute;
-          width: 80%;
+        
+        .strike-row-1, .strike-row-2, .strike-row-3,
+        .strike-col-1, .strike-col-2, .strike-col-3,
+        .strike-diagonal-1, .strike-diagonal-2 {
+          background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
           height: 4px;
-          background: white;
-          top: 49.5%;
-          left: 10%;
-          animation: strike 0.5s ease-out;
+          border-radius: 2px;
         }
-
-        .strike-row-3::after {
-          content: "";
-          position: absolute;
-          width: 80%;
-          height: 4px;
-          background: white;
-          top: 82.5%;
-          left: 10%;
-          animation: strike 0.5s ease-out;
+        
+        .strike-row-1 {
+          top: calc(16px + 40px);
+          left: 16px;
+          right: 16px;
         }
-
-        .strike-col-1::after {
-          content: "";
-          position: absolute;
+        
+        .strike-row-2 {
+          top: calc(16px + 40px + 88px);
+          left: 16px;
+          right: 16px;
+        }
+        
+        .strike-row-3 {
+          top: calc(16px + 40px + 176px);
+          left: 16px;
+          right: 16px;
+        }
+        
+        .strike-col-1 {
+          left: calc(16px + 40px);
+          top: 16px;
+          bottom: 16px;
           width: 4px;
-          height: 80%;
-          background: white;
-          left: 16.5%;
-          top: 10%;
-          animation: strike 0.5s ease-out;
+          height: auto;
+          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
         }
-
-        .strike-col-2::after {
-          content: "";
-          position: absolute;
+        
+        .strike-col-2 {
+          left: calc(16px + 40px + 88px);
+          top: 16px;
+          bottom: 16px;
           width: 4px;
-          height: 80%;
-          background: white;
-          left: 49.5%;
-          top: 10%;
-          animation: strike 0.5s ease-out;
+          height: auto;
+          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
         }
-
-        .strike-col-3::after {
-          content: "";
-          position: absolute;
+        
+        .strike-col-3 {
+          left: calc(16px + 40px + 176px);
+          top: 16px;
+          bottom: 16px;
           width: 4px;
-          height: 80%;
-          background: white;
-          left: 82.5%;
-          top: 10%;
-          animation: strike 0.5s ease-out;
+          height: auto;
+          background: linear-gradient(0deg, transparent 0%, #10b981 50%, transparent 100%);
         }
-
-        .strike-diagonal-1::after {
-          content: "";
-          position: absolute;
-          width: 90%;
-          height: 4px;
-          background: white;
+        
+        .strike-diagonal-1 {
           top: 50%;
-          left: 5%;
-          transform: rotate(45deg);
-          animation: strike 0.5s ease-out;
+          left: 16px;
+          right: 16px;
+          transform: translateY(-50%) rotate(45deg);
+          transform-origin: center;
         }
-
-        .strike-diagonal-2::after {
-          content: "";
-          position: absolute;
-          width: 90%;
-          height: 4px;
-          background: white;
+        
+        .strike-diagonal-2 {
           top: 50%;
-          left: 5%;
-          transform: rotate(-45deg);
-          animation: strike 0.5s ease-out;
-        }
-
-        @keyframes strike {
-          0% { width: 0; opacity: 0; }
-          100% { width: 80%; opacity: 1; }
+          left: 16px;
+          right: 16px;
+          transform: translateY(-50%) rotate(-45deg);
+          transform-origin: center;
         }
       `}</style>
     </div>
   );
 };
 
-export default GameEasy;
+export default Easy;
