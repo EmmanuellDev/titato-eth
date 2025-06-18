@@ -2,6 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { BsPersonLock } from 'react-icons/bs';
+import { ethers } from 'ethers';
+import YW from '../requirements/you-won.png';
+
+const contractABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
+      }
+    ],
+    "name": "mintWinnerNFT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
+
+const contractAddress = "0x9E2B0211384F6f01C2489F4750C6e53fFBD9bf9c";
 
 const Moderate = () => {
   const navigate = useNavigate();
@@ -12,6 +43,7 @@ const Moderate = () => {
   const [gameStatus, setGameStatus] = useState('');
   const [winningLine, setWinningLine] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [mintingStatus, setMintingStatus] = useState('');
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -26,6 +58,13 @@ const Moderate = () => {
     }
   }, [isPlayerTurn, gameStarted, isGameOver]);
 
+  useEffect(() => {
+    // Mint NFT when user wins
+    if (gameStatus.includes('You Win') && currentAccount) {
+      mintNFT();
+    }
+  }, [gameStatus]);
+
   const checkIfWalletIsConnected = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
@@ -36,6 +75,29 @@ const Moderate = () => {
       } catch (error) {
         console.error('Error checking wallet connection:', error);
       }
+    }
+  };
+
+  const mintNFT = async () => {
+    if (!window.ethereum) {
+      setMintingStatus('Please install MetaMask!');
+      return;
+    }
+
+    try {
+      setMintingStatus('Minting your NFT...');
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      // Placeholder token URI (replace with actual IPFS or hosted URL of you-won.png)
+      const tokenURI = "https://green-obedient-lizard-820.mypinata.cloud/ipfs/bafkreia5lvwlnbdy2hdshjarguutlc3plhcwsxjhpup7amdznftmtscjpq"; // Update this
+      const tx = await contract.mintWinnerNFT(currentAccount, tokenURI);
+      await tx.wait();
+      setMintingStatus('NFT minted successfully!');
+    } catch (error) {
+      console.error('Error minting NFT:', error);
+      setMintingStatus('Failed to mint NFT.');
     }
   };
 
@@ -64,13 +126,10 @@ const Moderate = () => {
     
     if (availableMoves.length === 0) return;
 
-    // Moderate AI: Strategic play with 80% optimal moves, 20% suboptimal for balance
     let aiMove;
     if (Math.random() < 0.8) {
-      // Use minimax algorithm for strategic play
       aiMove = getBestMove(board, 'O');
     } else {
-      // Occasionally make a suboptimal move
       const strategicMoves = getStrategicMoves(availableMoves);
       aiMove = strategicMoves.length > 0 ? 
         strategicMoves[Math.floor(Math.random() * strategicMoves.length)] :
@@ -100,7 +159,6 @@ const Moderate = () => {
   const getBestMove = (currentBoard, player) => {
     const availableMoves = currentBoard.map((cell, index) => cell === null ? index : null).filter(index => index !== null);
     
-    // Check if AI can win
     for (let move of availableMoves) {
       const testBoard = [...currentBoard];
       testBoard[move] = 'O';
@@ -109,7 +167,6 @@ const Moderate = () => {
       }
     }
 
-    // Check if AI needs to block player
     for (let move of availableMoves) {
       const testBoard = [...currentBoard];
       testBoard[move] = 'X';
@@ -118,20 +175,16 @@ const Moderate = () => {
       }
     }
 
-    // Strategic positioning: center, corners, edges (in that order)
     const center = 4;
     const corners = [0, 2, 6, 8];
     const edges = [1, 3, 5, 7];
 
-    // Take center if available
     if (availableMoves.includes(center)) {
       return center;
     }
 
-    // Take corners
     const availableCorners = corners.filter(corner => availableMoves.includes(corner));
     if (availableCorners.length > 0) {
-      // Prefer opposite corners for strategic play
       if (currentBoard[0] === 'X' && availableMoves.includes(8)) return 8;
       if (currentBoard[2] === 'X' && availableMoves.includes(6)) return 6;
       if (currentBoard[6] === 'X' && availableMoves.includes(2)) return 2;
@@ -140,7 +193,6 @@ const Moderate = () => {
       return availableCorners[Math.floor(Math.random() * availableCorners.length)];
     }
 
-    // Take edges as last resort
     const availableEdges = edges.filter(edge => availableMoves.includes(edge));
     if (availableEdges.length > 0) {
       return availableEdges[Math.floor(Math.random() * availableEdges.length)];
@@ -150,7 +202,6 @@ const Moderate = () => {
   };
 
   const getStrategicMoves = (availableMoves) => {
-    // Return moves that aren't completely random but aren't optimal
     const center = 4;
     const corners = [0, 2, 6, 8];
     
@@ -192,6 +243,7 @@ const Moderate = () => {
     setGameStatus('');
     setWinningLine(null);
     setIsGameOver(false);
+    setMintingStatus('');
   };
 
   const resetGame = () => {
@@ -200,6 +252,7 @@ const Moderate = () => {
     setGameStatus('');
     setWinningLine(null);
     setIsGameOver(false);
+    setMintingStatus('');
   };
 
   const getStrikeClass = () => {
@@ -207,17 +260,14 @@ const Moderate = () => {
     
     const [a, b, c] = winningLine;
     
-    // Row strikes
     if (a === 0 && b === 1 && c === 2) return 'strike-row-1';
     if (a === 3 && b === 4 && c === 5) return 'strike-row-2';
     if (a === 6 && b === 7 && c === 8) return 'strike-row-3';
     
-    // Column strikes
     if (a === 0 && b === 3 && c === 6) return 'strike-col-1';
     if (a === 1 && b === 4 && c === 7) return 'strike-col-2';
     if (a === 2 && b === 5 && c === 8) return 'strike-col-3';
     
-    // Diagonal strikes
     if (a === 0 && b === 4 && c === 8) return 'strike-diagonal-1';
     if (a === 2 && b === 4 && c === 6) return 'strike-diagonal-2';
     
@@ -226,7 +276,6 @@ const Moderate = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-orange-900 to-gray-900">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
           <div 
@@ -294,7 +343,7 @@ const Moderate = () => {
                   MODERATE MODE
                 </h1>
                 <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                  Step up the challenge! The AI plays strategically but still gives you opportunities to win with smart moves.
+                  Step up the challenge! The AI plays strategically but still gives you opportunities to win with smart moves. Win to mint an exclusive NFT!
                 </p>
                 <button
                   onClick={startGame}
@@ -319,6 +368,9 @@ const Moderate = () => {
                         "AI thinking... (O)"
                       }
                     </div>
+                  )}
+                  {mintingStatus && (
+                    <div className="text-lg text-orange-400 mt-2">{mintingStatus}</div>
                   )}
                 </div>
 
@@ -371,7 +423,6 @@ const Moderate = () => {
         </>
       )}
 
-      {/* Global styles for animations and strikes */}
       <style jsx global>{`
         @keyframes float {
           0% { transform: translate(0, 0) rotate(0deg); }
