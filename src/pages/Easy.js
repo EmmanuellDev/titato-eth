@@ -2,6 +2,110 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { BsPersonLock } from 'react-icons/bs';
+import { ethers } from 'ethers';
+
+const CONTRACT_ADDRESS = "0xF4d438Ef817a0e269e580231d6e73EDa7aEa193F";
+const CONTRACT_ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_winner",
+				"type": "address"
+			}
+		],
+		"name": "recordWin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "winner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "WinnerRecorded",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "getWins",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct TicTacToeWinner.Win[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "wins",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "winner",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
 
 const Easy = () => {
   const navigate = useNavigate();
@@ -39,6 +143,28 @@ const Easy = () => {
     }
   };
 
+  const recordWinnerOnChain = async (winnerAddress) => {
+    if (typeof window.ethereum === 'undefined') {
+      console.error('MetaMask is not installed');
+      setGameStatus('MetaMask not installed. Please install MetaMask to record wins.');
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+      const tx = await contract.recordWin(winnerAddress);
+      await tx.wait();
+      console.log('Winner recorded on-chain:', winnerAddress);
+      setGameStatus(`You Win, Congrats (${currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4)})! Recorded on-chain.`);
+    } catch (error) {
+      console.error('Error recording winner on-chain:', error);
+      setGameStatus(`You Win, Congrats (${currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4)})! Failed to record on-chain.`);
+    }
+  };
+
   const winningCombinations = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
@@ -64,13 +190,10 @@ const Easy = () => {
     
     if (availableMoves.length === 0) return;
 
-    // Easy AI: Make random moves with 30% chance of making optimal move
     let aiMove;
     if (Math.random() < 0.3) {
-      // Try to win or block player occasionally
       aiMove = findBestMove(availableMoves) || availableMoves[Math.floor(Math.random() * availableMoves.length)];
     } else {
-      // Make random move
       aiMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
     }
 
@@ -81,10 +204,7 @@ const Easy = () => {
     const result = checkWinner(newBoard);
     if (result) {
       setWinningLine(result.line);
-      setGameStatus(result.winner === 'X' ? 
-        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
-        'AI Wins!'
-      );
+      setGameStatus('AI Wins!');
       setIsGameOver(true);
     } else if (isBoardFull(newBoard)) {
       setGameStatus("It's a Draw!");
@@ -95,7 +215,6 @@ const Easy = () => {
   };
 
   const findBestMove = (availableMoves) => {
-    // Check if AI can win
     for (let move of availableMoves) {
       const testBoard = [...board];
       testBoard[move] = 'O';
@@ -104,7 +223,6 @@ const Easy = () => {
       }
     }
 
-    // Check if AI needs to block player
     for (let move of availableMoves) {
       const testBoard = [...board];
       testBoard[move] = 'X';
@@ -126,11 +244,12 @@ const Easy = () => {
     const result = checkWinner(newBoard);
     if (result) {
       setWinningLine(result.line);
-      setGameStatus(result.winner === 'X' ? 
-        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
-        'AI Wins!'
-      );
+      setGameStatus(`You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!`);
       setIsGameOver(true);
+      // Record winner on-chain
+      if (result.winner === 'X' && currentAccount) {
+        recordWinnerOnChain(currentAccount);
+      }
     } else if (isBoardFull(newBoard)) {
       setGameStatus("It's a Draw!");
       setIsGameOver(true);
@@ -161,17 +280,14 @@ const Easy = () => {
     
     const [a, b, c] = winningLine;
     
-    // Row strikes
     if (a === 0 && b === 1 && c === 2) return 'strike-row-1';
     if (a === 3 && b === 4 && c === 5) return 'strike-row-2';
     if (a === 6 && b === 7 && c === 8) return 'strike-row-3';
     
-    // Column strikes
     if (a === 0 && b === 3 && c === 6) return 'strike-col-1';
     if (a === 1 && b === 4 && c === 7) return 'strike-col-2';
     if (a === 2 && b === 5 && c === 8) return 'strike-col-3';
     
-    // Diagonal strikes
     if (a === 0 && b === 4 && c === 8) return 'strike-diagonal-1';
     if (a === 2 && b === 4 && c === 6) return 'strike-diagonal-2';
     
@@ -180,7 +296,6 @@ const Easy = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-green-900 to-gray-900">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
           <div 
@@ -325,7 +440,6 @@ const Easy = () => {
         </>
       )}
 
-      {/* Global styles for animations and strikes */}
       <style jsx global>{`
         @keyframes float {
           0% { transform: translate(0, 0) rotate(0deg); }
