@@ -2,6 +2,342 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { BsPersonLock } from 'react-icons/bs';
+import { ethers } from 'ethers';
+
+const CONTRACT_ADDRESS = '0x9B3867d3A632247C6Fc3e69a71B0C4F3B0bB217b';
+const CONTRACT_ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "allowance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "needed",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC20InsufficientAllowance",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "balance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "needed",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC20InsufficientBalance",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "approver",
+				"type": "address"
+			}
+		],
+		"name": "ERC20InvalidApprover",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "receiver",
+				"type": "address"
+			}
+		],
+		"name": "ERC20InvalidReceiver",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "ERC20InvalidSender",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			}
+		],
+		"name": "ERC20InvalidSpender",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "decimals",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
 
 const Hard = () => {
   const navigate = useNavigate();
@@ -12,6 +348,7 @@ const Hard = () => {
   const [gameStatus, setGameStatus] = useState('');
   const [winningLine, setWinningLine] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [txStatus, setTxStatus] = useState('');
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -36,6 +373,27 @@ const Hard = () => {
       } catch (error) {
         console.error('Error checking wallet connection:', error);
       }
+    }
+  };
+
+  const mintWinToken = async () => {
+    if (!currentAccount) {
+      setTxStatus('Please connect your wallet.');
+      return;
+    }
+
+    try {
+      setTxStatus('Minting WIN token...');
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+      const tx = await contract.mint(currentAccount, ethers.parseUnits('1', 18));
+      await tx.wait();
+      setTxStatus('WIN token minted successfully!');
+    } catch (error) {
+      console.error('Error minting token:', error);
+      setTxStatus('Failed to mint WIN token.');
     }
   };
 
@@ -67,10 +425,8 @@ const Hard = () => {
     // Hard AI: Uses minimax algorithm with 95% optimal play, 5% near-optimal for slight unpredictability
     let aiMove;
     if (Math.random() < 0.95) {
-      // Use full minimax algorithm for nearly unbeatable play
       aiMove = minimax(board, 0, false, -Infinity, Infinity).index;
     } else {
-      // Occasionally make a very good but not perfect move
       aiMove = getBestMove(board, 'O');
     }
 
@@ -81,10 +437,7 @@ const Hard = () => {
     const result = checkWinner(newBoard);
     if (result) {
       setWinningLine(result.line);
-      setGameStatus(result.winner === 'X' ? 
-        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
-        'AI Wins!'
-      );
+      setGameStatus('AI Wins!');
       setIsGameOver(true);
     } else if (isBoardFull(newBoard)) {
       setGameStatus("It's a Draw!");
@@ -94,11 +447,9 @@ const Hard = () => {
     }
   };
 
-  // Minimax algorithm with alpha-beta pruning for optimal play
   const minimax = (currentBoard, depth, isMaximizing, alpha, beta) => {
     const result = checkWinner(currentBoard);
     
-    // Terminal states
     if (result) {
       if (result.winner === 'O') return { score: 10 - depth };
       if (result.winner === 'X') return { score: depth - 10 };
@@ -124,7 +475,7 @@ const Hard = () => {
         }
         
         alpha = Math.max(alpha, evaluation.score);
-        if (beta <= alpha) break; // Alpha-beta pruning
+        if (beta <= alpha) break;
       }
       
       return maxEval;
@@ -142,7 +493,7 @@ const Hard = () => {
         }
         
         beta = Math.min(beta, evaluation.score);
-        if (beta <= alpha) break; // Alpha-beta pruning
+        if (beta <= alpha) break;
       }
       
       return minEval;
@@ -152,7 +503,6 @@ const Hard = () => {
   const getBestMove = (currentBoard, player) => {
     const availableMoves = currentBoard.map((cell, index) => cell === null ? index : null).filter(index => index !== null);
     
-    // Check if AI can win
     for (let move of availableMoves) {
       const testBoard = [...currentBoard];
       testBoard[move] = 'O';
@@ -161,7 +511,6 @@ const Hard = () => {
       }
     }
 
-    // Check if AI needs to block player
     for (let move of availableMoves) {
       const testBoard = [...currentBoard];
       testBoard[move] = 'X';
@@ -170,29 +519,24 @@ const Hard = () => {
       }
     }
 
-    // Strategic positioning: center, corners, edges (in that order)
     const center = 4;
     const corners = [0, 2, 6, 8];
     const edges = [1, 3, 5, 7];
 
-    // Take center if available
     if (availableMoves.includes(center)) {
       return center;
     }
 
-    // Take corners with strategic preference
     const availableCorners = corners.filter(corner => availableMoves.includes(corner));
     if (availableCorners.length > 0) {
-      // Prefer opposite corners for strategic play
       if (currentBoard[0] === 'X' && availableMoves.includes(8)) return 8;
       if (currentBoard[2] === 'X' && availableMoves.includes(6)) return 6;
       if (currentBoard[6] === 'X' && availableMoves.includes(2)) return 2;
       if (currentBoard[8] === 'X' && availableMoves.includes(0)) return 0;
       
-      return availableCorners[0]; // Take first available corner
+      return availableCorners[0];
     }
 
-    // Take edges as last resort
     const availableEdges = edges.filter(edge => availableMoves.includes(edge));
     if (availableEdges.length > 0) {
       return availableEdges[0];
@@ -211,11 +555,9 @@ const Hard = () => {
     const result = checkWinner(newBoard);
     if (result) {
       setWinningLine(result.line);
-      setGameStatus(result.winner === 'X' ? 
-        `You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!` : 
-        'AI Wins!'
-      );
+      setGameStatus(`You Win, Congrats (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})!`);
       setIsGameOver(true);
+      mintWinToken(); // Mint token on user win
     } else if (isBoardFull(newBoard)) {
       setGameStatus("It's a Draw!");
       setIsGameOver(true);
@@ -231,6 +573,7 @@ const Hard = () => {
     setGameStatus('');
     setWinningLine(null);
     setIsGameOver(false);
+    setTxStatus('');
   };
 
   const resetGame = () => {
@@ -239,6 +582,7 @@ const Hard = () => {
     setGameStatus('');
     setWinningLine(null);
     setIsGameOver(false);
+    setTxStatus('');
   };
 
   const getStrikeClass = () => {
@@ -246,17 +590,14 @@ const Hard = () => {
     
     const [a, b, c] = winningLine;
     
-    // Row strikes
     if (a === 0 && b === 1 && c === 2) return 'strike-row-1';
     if (a === 3 && b === 4 && c === 5) return 'strike-row-2';
     if (a === 6 && b === 7 && c === 8) return 'strike-row-3';
     
-    // Column strikes
     if (a === 0 && b === 3 && c === 6) return 'strike-col-1';
     if (a === 1 && b === 4 && c === 7) return 'strike-col-2';
     if (a === 2 && b === 5 && c === 8) return 'strike-col-3';
     
-    // Diagonal strikes
     if (a === 0 && b === 4 && c === 8) return 'strike-diagonal-1';
     if (a === 2 && b === 4 && c === 6) return 'strike-diagonal-2';
     
@@ -265,7 +606,6 @@ const Hard = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-gray-900 via-red-900 to-gray-900">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(25)].map((_, i) => (
           <div 
@@ -318,7 +658,7 @@ const Hard = () => {
                 )}
                 <button 
                   onClick={() => navigate('/modes')}
-                  className="px-4 py-2 rounded-full bg-gray-800 bg-opacity-70 text-gray-300 hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-full bg-gray-800 bg-opacity-70 text-gray-200 hover:bg-gray-300 transition-colors"
                 >
                   Back
                 </button>
@@ -350,13 +690,18 @@ const Hard = () => {
                 
                 <div className="mb-4">
                   {gameStatus ? (
-                    <div className="text-2xl font-bold text-white mb-4">{gameStatus}</div>
+                    <div className="text-2xl font-bold text-white mb-3">{gameStatus}</div>
                   ) : (
                     <div className="text-lg text-gray-300">
                       {isPlayerTurn ? 
-                        `Your Turn (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})` : 
-                        "AI analyzing... (O)"
+                        `Your Turn (${currentAccount ? currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4) : 'X'})` 
+                        : "AI analyzing... (O)"
                       }
+                    </div>
+                  )}
+                  {txStatus && (
+                    <div className={`text-sm ${txStatus.includes('Failed') ? 'text-red-400' : 'text-green-400'}`}>
+                      {txStatus}
                     </div>
                   )}
                 </div>
@@ -410,7 +755,6 @@ const Hard = () => {
         </>
       )}
 
-      {/* Global styles for animations and strikes */}
       <style jsx global>{`
         @keyframes float {
           0% { transform: translate(0, 0) rotate(0deg); }
