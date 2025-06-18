@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { BsPersonLock } from 'react-icons/bs';
 import { ethers } from 'ethers';
+import { SiBattledotnet } from "react-icons/si";
 
 const CONTRACT_ADDRESS = "0xF4d438Ef817a0e269e580231d6e73EDa7aEa193F";
 const CONTRACT_ABI = [
@@ -334,8 +335,8 @@ const Easy = () => {
         <>
           <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
-              <div className="text-xl eater-regular font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-500">
-                Emma TTT-Game
+              <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-500">
+                XO-Tactics
               </div>
               <div className="flex items-center space-x-4">
                 {currentAccount && (
@@ -374,7 +375,7 @@ const Easy = () => {
               </div>
             ) : (
               <div className="text-center w-full max-w-md mx-auto">
-                <h2 className="text-3xl eater-regular font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-600">
+                <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-600">
                   EASY MODE
                 </h2>
                 
@@ -417,7 +418,7 @@ const Easy = () => {
                 <div className="mt-6 space-x-4">
                   <button
                     onClick={resetGame}
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg transition-all duration-300"
+                    className="px-6 py-2 rounded-full bg-gradient-to-r from-green-400 to-lime-600 text-white font-semibold hover:shadow-lg transition-all duration-300"
                   >
                     Reset Game
                   </button>
@@ -432,11 +433,14 @@ const Easy = () => {
             )}
           </main>
 
-          <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
-            <div className="container mx-auto px-4">
-              <p>© {new Date().getFullYear()} EMMA CATERINGS. All rights reserved | Designed By Team Fortiv</p>
-            </div>
-          </footer>
+      <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
+        <div className="container mx-auto px-4">
+          <p>© {new Date().getFullYear()} XO-TacTics | All rights reserved</p>
+          <div className="flex justify-center items-center space-x-4 mt-2">
+            <h2 className='flex justify-between gap-2'><SiBattledotnet className='text-2xl' />Developed By<span className='orbitron'>Emmanuel Ramamoorthy</span></h2>
+          </div>
+        </div>
+      </footer>
         </>
       )}
 

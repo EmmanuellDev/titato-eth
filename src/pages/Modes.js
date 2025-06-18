@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BsPersonLock } from "react-icons/bs";
 import '../App.css'
+import { SiBattledotnet } from "react-icons/si";
 
 const Modes = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const Modes = () => {
       <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-purple-500">
-            Emma TTT Game
+            XO-Tactics
           </div>
           <div className="flex items-center space-x-4">
             {currentAccount && (
@@ -117,7 +118,7 @@ const Modes = () => {
                 Choose Your Mode
               </h1>
               <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                Select a difficulty level to challenge yourself against our AI opponent
+                Select a difficulty level to challenge yourself against our Emma AI
               </p>
             </div>
 
@@ -144,7 +145,10 @@ const Modes = () => {
 
       <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
         <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} EMMA CATERINGS. All rights reserved | Designed By Team Fortiv</p>
+          <p>© {new Date().getFullYear()} XO-TacTics | All rights reserved</p>
+          <div className="flex justify-center items-center space-x-4 mt-2">
+            <h2 className='flex justify-between gap-2'><SiBattledotnet className='text-2xl' />Developed By<span className='orbitron'>Emmanuel Ramamoorthy</span></h2>
+          </div>
         </div>
       </footer>
 

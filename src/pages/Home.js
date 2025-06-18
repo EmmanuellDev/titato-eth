@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
 import '../App.css';
 import { IoIosLogOut } from "react-icons/io";
+import { SiBattledotnet } from "react-icons/si";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const Home = () => {
       <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-purple-500">
-            Emma TTT~Game
+            XO-TacTics
           </div>
           {walletConnected && networkCorrect && (
             <div className="relative flex items-center space-x-2">
@@ -174,7 +175,7 @@ const Home = () => {
             TIC TAC TOE
           </h1>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl lg:ml-14">
-            Play the classic game on the Ethereum blockchain. Challenge friends or test your skills against our AI!
+            Play this classic game on the Ethereum blockchain. Challenge yourself by testing your skills against our Emma AI!
           </p>
 
           {!walletConnected || !networkCorrect ? (
@@ -219,11 +220,9 @@ const Home = () => {
 
       <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
         <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} EMMA CATERINGS. All rights reserved | Designed By Team Fortiv</p>
-          <div className="flex justify-center space-x-4 mt-2">
-            <a href="#" className="hover:text-teal-400 transition-colors">Terms</a>
-            <a href="#" className="hover:text-purple-400 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-pink-400 transition-colors">Contact</a>
+          <p>© {new Date().getFullYear()} XO-TacTics | All rights reserved</p>
+          <div className="flex justify-center items-center space-x-4 mt-2">
+            <h2 className='flex justify-between gap-2'><SiBattledotnet className='text-2xl' />Developed By<span className='orbitron'>Emmanuel Ramamoorthy</span></h2>
           </div>
         </div>
       </footer>
