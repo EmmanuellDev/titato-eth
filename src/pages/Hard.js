@@ -627,7 +627,7 @@ const Hard = () => {
         <div className="relative z-10 flex flex-col items-center justify-center flex-grow px-4">
           <div className="text-center">
             <BsPersonLock className="mx-auto text-9xl text-teal-400 mb-4" />
-            <h1 className="text-5xl md:text-6xl orbitron font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-purple-500 to-pink-500">
+            <h1 className="text-5xl md:text-6xl orbitron font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-orange-600">
               Unauthorized
             </h1>
             <p className="text-xl text-gray-300 mb-8">
@@ -635,7 +635,7 @@ const Hard = () => {
             </p>
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-3 rounded-full bg-gradient-to-r from-teal-400 to-purple-500 text-white font-semibold hover:from-teal-500 hover:to-purple-600 transition-all duration-300"
+              className="px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold hover:from-red-400 hover:to-orange-500 transition-all duration-300"
             >
               Back to Home
             </button>
@@ -713,7 +713,7 @@ const Hard = () => {
                       <button
                         key={index}
                         onClick={() => handleCellClick(index)}
-                        className={`w-28 h-28 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center text-5xl font-bold transition-all duration-200 ${
+                        className={`w-28 h-28 bg-gray-700 rounded-lg flex items-center justify-center text-5xl font-bold transition-all duration-200 ${
                           winningLine?.includes(index) ? 'bg-red-500 text-white' : ''
                         } ${
                           cell === 'X' ? 'text-blue-400' : cell === 'O' ? 'text-red-400' : 'text-gray-400'
@@ -733,7 +733,7 @@ const Hard = () => {
                 <div className="mt-6 space-x-4">
                   <button
                     onClick={resetGame}
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg transition-all duration-300"
+                    className="px-6 py-2 rounded-full bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold hover:shadow-lg transition-all duration-300"
                   >
                     Reset Game
                   </button>
@@ -759,83 +759,85 @@ const Hard = () => {
         </>
       )}
 
-      <style jsx global>{`
-        @keyframes float {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          50% { transform: translate(15px, 15px) rotate(180deg); }
-          100% { transform: translate(0, 0) rotate(360deg); }
-        }
-        
-        .strike-row-1, .strike-row-2, .strike-row-3,
-        .strike-col-1, .strike-col-2, .strike-col-3,
-        .strike-diagonal-1, .strike-diagonal-2 {
-          background: linear-gradient(90deg, transparent 0%, #dc2626 50%, transparent 100%);
-          height: 6px;
-          border-radius: 3px;
-          z-index: 10;
-        }
-        
-        .strike-row-1 {
-          top: calc(24px + 56px);
-          left: 24px;
-          right: 24px;
-        }
-        
-        .strike-row-2 {
-          top: calc(24px + 56px + 124px);
-          left: 24px;
-          right: 24px;
-        }
-        
-        .strike-row-3 {
-          top: calc(24px + 56px + 248px);
-          left: 24px;
-          right: 24px;
-        }
-        
-        .strike-col-1 {
-          left: calc(24px + 56px);
-          top: 24px;
-          bottom: 24px;
-          width: 6px;
-          height: auto;
-          background: linear-gradient(0deg, transparent 0%, #dc2626 50%, transparent 100%);
-        }
-        
-        .strike-col-2 {
-          left: calc(24px + 56px + 124px);
-          top: 24px;
-          bottom: 24px;
-          width: 6px;
-          height: auto;
-          background: linear-gradient(0deg, transparent 0%, #dc2626 50%, transparent 100%);
-        }
-        
-        .strike-col-3 {
-          left: calc(24px + 56px + 248px);
-          top: 24px;
-          bottom: 24px;
-          width: 6px;
-          height: auto;
-          background: linear-gradient(0deg, transparent 0%, #dc2626 50%, transparent 100%);
-        }
-        
-        .strike-diagonal-1 {
-          top: 50%;
-          left: 24px;
-          right: 24px;
-          transform: translateY(-50%) rotate(45deg);
-          transform-origin: center;
-        }
-        
-        .strike-diagonal-2 {
-          top: 50%;
-          left: 24px;
-          right: 24px;
-          transform: translateY(-50%) rotate(-45deg);
-          transform-origin: center;
-        }
-      `}</style>
+<style jsx global>{`
+  @keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(15px, 15px) rotate(180deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+  }
+  
+  .strike-row-1, .strike-row-2, .strike-row-3,
+  .strike-col-1, .strike-col-2, .strike-col-3,
+  .strike-diagonal-1, .strike-diagonal-2 {
+    background: #000000; /* Solid black */
+    height: 6px;
+    border-radius: 3px;
+    z-index: 10;
+  }
+  
+  .strike-row-1 {
+    top: calc(24px + 56px);
+    left: 24px;
+    right: 24px;
+  }
+  
+  .strike-row-2 {
+    top: calc(24px + 56px + 124px);
+    left: 24px;
+    right: 24px;
+  }
+  
+  .strike-row-3 {
+    top: calc(24px + 56px + 248px);
+    left: 24px;
+    right: 24px;
+  }
+  
+  .strike-col-1 {
+    left: calc(24px + 56px);
+    top: 24px;
+    bottom: 24px;
+    width: 6px;
+    height: auto;
+    background: #000000; /* Solid black */
+  }
+  
+  .strike-col-2 {
+    left: calc(24px + 56px + 124px);
+    top: 24px;
+    bottom: 24px;
+    width: 6px;
+    height: auto;
+    background: #000000; /* Solid black */
+  }
+  
+  .strike-col-3 {
+    left: calc(24px + 56px + 248px);
+    top: 24px;
+    bottom: 24px;
+    width: 6px;
+    height: auto;
+    background: #000000; /* Solid black */
+  }
+  
+  .strike-diagonal-1 {
+    top: 50%;
+    left: 24px;
+    right: 24px;
+    transform: translateY(-50%) rotate(45deg);
+    transform-origin: center;
+    background: #000000; /* Solid black */
+  }
+  
+  .strike-diagonal-2 {
+    top: 50%;
+    left: 24px;
+    right: 24px;
+    transform: translateY(-50%) rotate(-45deg);
+    transform-origin: center;
+    background: #000000; /* Solid black */
+  }
+`}</style>
     </div>
   );
 };

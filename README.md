@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# XO-TacTics
+## Overview
+XO-TacTics is a web-based Tic-Tac-Toe game built with React, featuring three challenging difficulty modes where players compete against Emma AI powered by the minimax algorithm with alpha-beta pruning. The game integrates with Ethereum Sepolia testnet via MetaMask, offering different blockchain rewards for each victory depending on the difficulty of the level.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Game Modes
 
-## Available Scripts
+### 🟢 Easy Mode
+- AI Difficulty: Makes occasional mistakes
+- Reward: Your wallet address gets permanently stored on the blockchain
+- Blockchain Impact: Immutable record of your victory in the WinnerRegistry contract
 
-In the project directory, you can run:
+### 🟡 Moderate Mode  
+- AI Difficulty: Strategic but beatable
+- Reward: Exclusive XO-TacTics Victory NFT minted to your wallet
+- NFT Details: ERC-721 token with unique identifier proving your win
 
-### `npm start`
+### 🔴 Hard Mode
+- AI Difficulty: Near-unbeatable (uses optimized minimax with alpha-beta pruning)
+- Reward: 1 WIN token (ERC20) automatically sent to your wallet
+- Token Utility: Tradeable cryptocurrency reward for elite players
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
+- Three-tiered difficulty system with escalating rewards
+- On-chain record of easy mode victories
+- Collectible NFTs for moderate mode wins
+- Cryptocurrency rewards for hard mode conquests
+- Sleek animated UI with gradient backgrounds
+- Responsive design for all devices
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## TECH STACK
 
-### `npm test`
+### Frontend:
+- React: For building the user interface
+- React Router: For navigation between pages
+- ethers.js: For interacting with the Ethereum blockchain
+- React Icons: For UI icons
+- Tailwind CSS: Custom styles with animations and gradients
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Blockchain:
+- Solidity: Smart contracts for WIN token (ERC20), WinnerRegistry, and XONFT (ERC721)
+- OpenZeppelin: Secure contract implementations
+- Sepolia Testnet: Ethereum test network for deployments
 
-### `npm run build`
+### Tools:
+- MetaMask: Wallet connection and transaction signing
+- Remix IDE: Contract compilation and deployment
+- npm: Dependency management
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Prerequisites
+- Node.js (v16+)
+- MetaMask browser extension (configured for Sepolia)
+- Sepolia test ETH (from [Sepolia Faucet](https://sepoliafaucet.com/))
+- Remix IDE (for contract deployment)
+- VS Code or similar text editor
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+© 2025 XO-TacTics. All rights reserved. Designed by Emmanuel Ramamoorthy.
+Contact
+For support or contributions, contact [emmanuelsk04@gmail.com] or open an issue on GitHub.

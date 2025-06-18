@@ -68,32 +68,7 @@ const Modes = () => {
         ))}
       </div>
 
-      <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-purple-500">
-            XO-Tactics
-          </div>
-          <div className="flex items-center space-x-4">
-            {currentAccount && (
-              <div className="flex items-center space-x-2 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full">
-                <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
-                <span className="text-sm text-gray-300 font-mono">
-                  {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)}
-                </span>
-              </div>
-            )}
-            <button 
-              onClick={() => navigate('/')}
-              className="px-4 py-2 rounded-full bg-gray-800 bg-opacity-70 text-gray-300 hover:text-white transition-colors"
-            >
-              Back
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="relative z-10 flex flex-col items-center flex-grow px-4 py-12">
-        {!currentAccount ? (
+      {!currentAccount ? (
         <div className="relative z-10 flex flex-col items-center justify-center flex-grow px-4">
           <div className="text-center">
             <BsPersonLock className="mx-auto text-9xl text-teal-400 mb-4" />
@@ -111,8 +86,33 @@ const Modes = () => {
             </button>
           </div>
         </div>
-        ) : (
-          <>
+      ) : (
+        <>
+          <header className="relative z-10 py-6 px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center">
+              <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-purple-500">
+                XO-Tactics
+              </div>
+              <div className="flex items-center space-x-4">
+                {currentAccount && (
+                  <div className="flex items-center space-x-2 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full">
+                    <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span className="text-sm text-gray-300 font-mono">
+                      {currentAccount.slice(0, 6)}...{currentAccount.slice(-4)}
+                    </span>
+                  </div>
+                )}
+                <button 
+                  onClick={() => navigate('/')}
+                  className="px-4 py-2 rounded-full bg-gray-800 bg-opacity-70 text-gray-300 hover:text-white transition-colors"
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <main className="relative z-10 flex flex-col items-center flex-grow px-4 py-12">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-6xl orbitron font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-purple-500 to-pink-500">
                 Choose Your Mode
@@ -139,18 +139,18 @@ const Modes = () => {
                 </div>
               ))}
             </div>
-          </>
-        )}
-      </main>
+          </main>
 
-      <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
-        <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} XO-TacTics | All rights reserved</p>
-          <div className="flex justify-center items-center space-x-4 mt-2">
-            <h2 className='flex justify-between gap-2'><SiBattledotnet className='text-2xl' />Developed By<span className='orbitron'>Emmanuel Ramamoorthy</span></h2>
-          </div>
-        </div>
-      </footer>
+          <footer className="relative z-10 text-center py-6 bg-gray-800 bg-opacity-70 backdrop-blur-sm text-sm text-gray-400">
+            <div className="container mx-auto px-4">
+              <p>© {new Date().getFullYear()} XO-TacTics | All rights reserved</p>
+              <div className="flex justify-center items-center space-x-4 mt-2">
+                <h2 className='flex justify-between gap-2'><SiBattledotnet className='text-2xl' />Developed By<span className='orbitron'>Emmanuel Ramamoorthy</span></h2>
+              </div>
+            </div>
+          </footer>
+        </>
+      )}
 
       {/* Global styles for animations */}
       <style jsx global>{`
